@@ -113,30 +113,19 @@ class ItemAttributes {
 
     static attributeProcessors: RawItemAttributeProcessor[] = [
         new RawItemAttributeProcessor(/^-+$/, "---"),
-        new RawItemAttributeProcessor(/^(\d+) (\d+) DpH$/i, "[$1 - $3] Damage per Hit"),
-        new RawItemAttributeProcessor(/^(\d+) A$/i, "$1 Armor"),
-        new RawItemAttributeProcessor(/^(\d+) DPS$/i, "$1 Damage Per Second"),
-        new RawItemAttributeProcessor(/^(\d+\.\d+) ApS$/i, "$1 Attacks per Second"),
-        new RawItemAttributeProcessor(/^(\d+\.\d+) ApSSW$/i, "$1 Attacks per Second (Slow Weapon)"),
-        new RawItemAttributeProcessor(/^(\d+\.\d+) ApSVFW$/i, "$1 Attacks per Second (Very Fast Weapon)"),
+        new RawItemAttributeProcessor(/^(\d+( \d+)?) ?(IP)?$/i, "$1 Item Power"),
         new RawItemAttributeProcessor(/^(\d+(\.\d+))%? CR$/i, "$1% Cooldown Reduction"),
         new RawItemAttributeProcessor(/^(\d+(\.\d+))%? DR$/i, "$1% Damage Reduction"),
         new RawItemAttributeProcessor(/^(\d+(\.\d+))%? FR$/i, "$1% Fire Resistance"),
         new RawItemAttributeProcessor(/^(\d+(\.\d+))%? LR$/i, "$1% Lightning Resistance"),
         new RawItemAttributeProcessor(/^(\d+(\.\d+))%? MCR$/i, "$1% Mana Cost Reduction"),
         new RawItemAttributeProcessor(/^(\d+(\.\d+))%? SR$/i, "$1% Shadow Resistance"),
-        new RawItemAttributeProcessor(/^\+?(\d+) I$/i, "+$1 Intelligence"),
-        new RawItemAttributeProcessor(/^\+?(\d+) AS$/i, "+$1 All Stats"),
-        new RawItemAttributeProcessor(/^\+?(\d+) LOK$/i, "+$1 Life On Kill"),
-        new RawItemAttributeProcessor(/^\+?(\d+) LRwNDR$/i, "+$1 Life Regeneration while Not Damaged Recently"),
-        new RawItemAttributeProcessor(/^\+?(\d+) ML$/i, "+$1 Maximum Life"),
-        new RawItemAttributeProcessor(/^\+?(\d+) RoC$/i, "+$1 Rank of Caltrops (Rogue Only)"),
-        new RawItemAttributeProcessor(/^\+?(\d+) RoI$/i, "+$1 Rank of Incinerate (Sorcerer Only)"),
-        new RawItemAttributeProcessor(/^\+?(\d+) RoLS$/i, "+$1 Rank of Lightning Spear (Sorcerer Only)"),
-        new RawItemAttributeProcessor(/^\+?(\d+) RoM$/i, "+$1 Rank of Meteor (Sorcerer Only)"),
-        new RawItemAttributeProcessor(/^\+?(\d+) RoSG$/i, "+$1 Rank of Smoke Grenade (Rogue Only)"),
-        new RawItemAttributeProcessor(/^\+?(\d+) S$/i, "+$1 Strength"),
-        new RawItemAttributeProcessor(/^\+?(\d+) W$/i, "+$1 Willpower"),
+        new RawItemAttributeProcessor(/^(\d+) (\d+) DpH$/i, "[$1 - $3] Damage per Hit"),
+        new RawItemAttributeProcessor(/^(\d+) A$/i, "$1 Armor"),
+        new RawItemAttributeProcessor(/^(\d+) DPS$/i, "$1 Damage Per Second"),
+        new RawItemAttributeProcessor(/^(\d+\.\d+) ApS$/i, "$1 Attacks per Second"),
+        new RawItemAttributeProcessor(/^(\d+\.\d+) ApSSW$/i, "$1 Attacks per Second (Slow Weapon)"),
+        new RawItemAttributeProcessor(/^(\d+\.\d+) ApSVFW$/i, "$1 Attacks per Second (Very Fast Weapon)"),
         new RawItemAttributeProcessor(/^\+?(\d+(\.\d+))%? AS$/i, "+$1% Attack Speed"),
         new RawItemAttributeProcessor(/^\+?(\d+(\.\d+))%? CD$/i, "+$1% Cold Damage"),
         new RawItemAttributeProcessor(/^\+?(\d+(\.\d+))%? CSC$/i, "+$1% Critical Strike Chance"),
@@ -149,6 +138,18 @@ class ItemAttributes {
         new RawItemAttributeProcessor(/^\+?(\d+(\.\d+))%? HR$/i, "+$1% Healing Received"),
         new RawItemAttributeProcessor(/^\+?(\d+(\.\d+))%? OD$/i, "+$1% Overpower Damage"),
         new RawItemAttributeProcessor(/^\+?(\d+(\.\d+))%? VD$/i, "+$1% Vulnerable Damage"),
+        new RawItemAttributeProcessor(/^\+?(\d+) AS$/i, "+$1 All Stats"),
+        new RawItemAttributeProcessor(/^\+?(\d+) I$/i, "+$1 Intelligence"),
+        new RawItemAttributeProcessor(/^\+?(\d+) LOK$/i, "+$1 Life On Kill"),
+        new RawItemAttributeProcessor(/^\+?(\d+) LRwNDR$/i, "+$1 Life Regeneration while Not Damaged Recently"),
+        new RawItemAttributeProcessor(/^\+?(\d+) ML$/i, "+$1 Maximum Life"),
+        new RawItemAttributeProcessor(/^\+?(\d+) RoC$/i, "+$1 Rank of Caltrops (Rogue Only)"),
+        new RawItemAttributeProcessor(/^\+?(\d+) RoI$/i, "+$1 Rank of Incinerate (Sorcerer Only)"),
+        new RawItemAttributeProcessor(/^\+?(\d+) RoLS$/i, "+$1 Rank of Lightning Spear (Sorcerer Only)"),
+        new RawItemAttributeProcessor(/^\+?(\d+) RoM$/i, "+$1 Rank of Meteor (Sorcerer Only)"),
+        new RawItemAttributeProcessor(/^\+?(\d+) RoSG$/i, "+$1 Rank of Smoke Grenade (Rogue Only)"),
+        new RawItemAttributeProcessor(/^\+?(\d+) S$/i, "+$1 Strength"),
+        new RawItemAttributeProcessor(/^\+?(\d+) W$/i, "+$1 Willpower"),
         new RawItemAttributeProcessor(/^EG \+?(\d+(\.\d+))%? MSf1S$/i, "Evade Grants +$1% Movement Speed for 1 Second"),
         new RawItemAttributeProcessor(/^ES$/, "Empty Socket"),
         new RawItemAttributeProcessor(/^LHUta *(\d+(\.\d+))%? *CtEINE$/i, "Lucky Hit: Up to a +$1% Chance to Execute Injured Non-Elites"),
@@ -246,7 +247,7 @@ class ItemAttributes {
 
     renderAnchor(htmlAnchorElement: HTMLAnchorElement) {
         const encodedText = this.encode_0_1()
-        htmlAnchorElement.href = "view/#" + encodedText;
+        htmlAnchorElement.href = "https://d4pi.com/view/#" + encodedText;
         htmlAnchorElement.text = "https://d4pi.com/view/#" + encodedText;
     }
 
