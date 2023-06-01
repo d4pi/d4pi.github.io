@@ -26,6 +26,7 @@ D4pi attempts to render items as closely as their in-game counterparts
 * [Magic](https://d4pi.com/view/#0.2.0.0%26%0ATest%20Item%0A1%0Am%0Asw%0A1%0A100ip%0A%0A%0A)
 * [Rare](https://d4pi.com/view/#0.2.0.0%26%0ATest%20Item%0A1%0Ar%0Asw%0A1%0A100ip%0A%0A%0A)
 * [Legdenary](https://d4pi.com/view/#0.2.0.0%26%0ATest%20Item%0A1%0Al%0Asw%0A1%0A100ip%0A%0A%0A)
+* [Unique](https://d4pi.com/view/#0.2.0.0%26%0ATest%20Item%0A1%0Au%0Asw%0A1%0A100ip%0A%0A%0A)
 
 ---
 
