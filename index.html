@@ -17,9 +17,9 @@
 
 <body>
 
-    <h1 class="text-center">D4 Item as Text or Link</h1>
+    <h1 class="text-center">Post D4 Item as Text or Link</h1>
 
-    <p class="text-center text-muted">0.2.0</p>
+    <p class="text-center text-muted">0.3.0</p>
 
     <div class="container">
 
@@ -29,26 +29,20 @@
 
                 <div>
 
-                    <h2 class="label">1. Enter Item Attributes</h2>
+                    <h2 class="label">1. Edit Item Attributes Here</h2>
 
                     <textarea id="raw-item-attributes" class="font-monospace" rows="40" cols="60">
-# Lines starting with `#` are ignored.
-
-# Empty-ish lines are ignored.
-
-# 1st entry: Item Name
+# Item Name
 
 Masked Work
 
-# 2st entry: abbreviated Item Rarity & Item Type
+# Abbreviated Item Rarity Level & Item Type
 
 S R H
 
-# 3rd entry and beyond: other Item Attributes
+# Other Item Attributes
 
 281 ip
-
-# Lines starting with `=` are treated as separators.
 
 =
 
@@ -56,21 +50,74 @@ S R H
 
 351 Armor
 
+=
+
 # Item Attributes can be entered with case-insensitive abbreviations/acronyms.
 
 +3.3% CSC
 +18 i
 WIYPAG 25% MSf2S
 
-# Item Attributes can be entered without punctuations.
+=
 
+# Item Attributes can be entered without punctuation.
+
+5CSD
 10LRwNDR
 2.5ta
 
-# Last 2 lines: Level & Class Requirements (optional)
+=
+
+# Last 2 lines: Level & Class Requirements
 RL 17
 S
+
+# Lines starting with `#` are ignored.
+
+# Empty-ish lines are ignored.
+
+# Lines starting with `=` are treated as separators.
                     </textarea>
+
+                    <h5>Item Rarity Levels</h5>
+
+                    <p>
+                        <code>A</code> Ancestral
+                        <code>C</code> Common
+                        <code>L</code> Legendary
+                        <code>M</code> Magic
+                        <code>R</code> Rare
+                        <code>S</code> Sacred
+                        <code>U</code> Unique
+                    </p>
+
+                    <h5>Item Types</h5>
+
+                    <p>
+                        <code>Am</code> Amulet
+                        <code>Ax</code> Axe
+                        <code>Bo</code> Boots
+                        <code>Bw</code> Bow
+                        <code>Ch</code> Chest Armor
+                        <code>Cr</code> Crossbow
+                        <code>D$</code> Dagger
+                        <code>F$</code> Focus
+                        <code>G$</code> Gloves
+                        <code>H$</code> Helm
+                        <code>M$</code> Mace
+                        <code>Pa</code> Pants
+                        <code>Po</code> Polearm
+                        <code>R$</code> Ring
+                        <code>Sc</code> Scythe
+                        <code>Sh</code> Shield
+                        <code>St</code> Staff
+                        <code>Sw</code> Sword
+                        <code>TA</code> Two-Handed Axe
+                        <code>TM</code> Two-Handed Mace
+                        <code>TSc</code> Two-Handed Scythe
+                        <code>TSw</code> Two-Handed Sword
+                        <code>W$</code> Wand
+                    </p>
 
                 </div>
 
@@ -78,11 +125,11 @@ S
 
             <div class="col">
 
-                <h2 class="label">2. View Item as Text</h2>
+                <h3 class="label">2. View Item as Text</h3>
 
                 <div id="item-attributes"></div>
 
-                <h2 class="label">3. Share Item as Link</h2>
+                <h3 class="label">3. Share Item as Link</h3>
 
                 <p>
 
@@ -90,19 +137,30 @@ S
 
                 </p>
 
+                <hr>
+
+                <div class="text-muted">
+                    Developer Notes
+                    <ul>
+                        <li>Work-in-Progress: Ensure all available item attributes are properly supported and
+                            documented.
+                        </li>
+                        <li>To-Do: aesthetic improvements</li>
+                    </ul>
+                    </p>
+                </div>
+
             </div>
 
         </div>
 
-    </div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+            crossorigin="anonymous"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
-        crossorigin="anonymous"></script>
+        <script src="d4pi.js"></script>
 
-    <script src="d4pi.js"></script>
-
-    <script src="index.js"></script>
+        <script src="index.js"></script>
 </body>
 
 </html>

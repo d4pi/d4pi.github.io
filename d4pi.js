@@ -52,36 +52,39 @@ RawTextProcessor.itemAttributesProcessors = [
     new RawTextProcessor(/^(\d+\.\d+) ApS$/i, "$1 Attacks per Second"),
     new RawTextProcessor(/^(\d+\.\d+) ApSSW$/i, "$1 Attacks per Second (Slow Weapon)"),
     new RawTextProcessor(/^(\d+\.\d+) ApSVFW$/i, "$1 Attacks per Second (Very Fast Weapon)"),
-    new RawTextProcessor(/^\+?(\d+(\.\d+))%? AS$/i, "+$1% Attack Speed"),
-    new RawTextProcessor(/^\+?(\d+(\.\d+))%? CD$/i, "+$1% Cold Damage"),
-    new RawTextProcessor(/^\+?(\d+(\.\d+))%? CSC$/i, "+$1% Critical Strike Chance"),
-    new RawTextProcessor(/^\+?(\d+(\.\d+))%? CSD$/i, "+$1% Core Skill Damage"),
-    new RawTextProcessor(/^\+?(\d+(\.\d+))%? CSD$/i, "+$1% Critical Strike Damage"),
-    new RawTextProcessor(/^\+?(\d+(\.\d+))%? DtCCE$/i, "+$1% Damage to Crowd Controlled Enemies"),
-    new RawTextProcessor(/^\+?(\d+(\.\d+))%? DtCE$/i, "+$1% Damage to Close Enemies"),
-    new RawTextProcessor(/^\+?(\d+(\.\d+))%? DtSlE$/i, "+$1% Damage to Slowed Enemies"),
-    new RawTextProcessor(/^\+?(\d+(\.\d+))%? DtStE$/i, "+$1% Damage to Stunned Enemies"),
-    new RawTextProcessor(/^\+?(\d+(\.\d+))%? HR$/i, "+$1% Healing Received"),
-    new RawTextProcessor(/^\+?(\d+(\.\d+))%? OD$/i, "+$1% Overpower Damage"),
-    new RawTextProcessor(/^\+?(\d+(\.\d+))%? VD$/i, "+$1% Vulnerable Damage"),
-    new RawTextProcessor(/^\+?(\d+) AS$/i, "+$1 All Stats"),
-    new RawTextProcessor(/^\+?(\d+) I$/i, "+$1 Intelligence"),
-    new RawTextProcessor(/^\+?(\d+) LOK$/i, "+$1 Life On Kill"),
-    new RawTextProcessor(/^\+?(\d+) LRwNDR$/i, "+$1 Life Regeneration while Not Damaged Recently"),
-    new RawTextProcessor(/^\+?(\d+) ML$/i, "+$1 Maximum Life"),
-    new RawTextProcessor(/^\+?(\d+) RoC$/i, "+$1 Rank of Caltrops (Rogue Only)"),
-    new RawTextProcessor(/^\+?(\d+) RoI$/i, "+$1 Rank of Incinerate (Sorcerer Only)"),
-    new RawTextProcessor(/^\+?(\d+) RoLS$/i, "+$1 Rank of Lightning Spear (Sorcerer Only)"),
-    new RawTextProcessor(/^\+?(\d+) RoM$/i, "+$1 Rank of Meteor (Sorcerer Only)"),
-    new RawTextProcessor(/^\+?(\d+) RoSG$/i, "+$1 Rank of Smoke Grenade (Rogue Only)"),
-    new RawTextProcessor(/^\+?(\d+) S$/i, "+$1 Strength"),
-    new RawTextProcessor(/^\+?(\d+) W$/i, "+$1 Willpower"),
+    new RawTextProcessor(/^\+?(\d+(\.\d+)?)%? *AS$/i, "+$1% Attack Speed"),
+    new RawTextProcessor(/^\+?(\d+(\.\d+)?)%? *CD$/i, "+$1% Cold Damage"),
+    new RawTextProcessor(/^\+?(\d+(\.\d+)?)%? *CSC$/i, "+$1% Critical Strike Chance"),
+    new RawTextProcessor(/^\+?(\d+(\.\d+)?)%? *CSD$/i, "+$1% Core Skill Damage"),
+    new RawTextProcessor(/^\+?(\d+(\.\d+)?)%? *CSD$/i, "+$1% Critical Strike Damage"),
+    new RawTextProcessor(/^\+?(\d+(\.\d+)?)%? *CSD$/i, "+$1% Critical Strike Damage"),
+    new RawTextProcessor(/^\+?(\d+(\.\d+)?)%? *DtCCE$/i, "+$1% Damage to Crowd Controlled Enemies"),
+    new RawTextProcessor(/^\+?(\d+(\.\d+)?)%? *DtCE$/i, "+$1% Damage to Close Enemies"),
+    new RawTextProcessor(/^\+?(\d+(\.\d+)?)%? *DtSlE$/i, "+$1% Damage to Slowed Enemies"),
+    new RawTextProcessor(/^\+?(\d+(\.\d+)?)%? *DtStE$/i, "+$1% Damage to Stunned Enemies"),
+    new RawTextProcessor(/^\+?(\d+(\.\d+)?)%? *HR$/i, "+$1% Healing Received"),
+    new RawTextProcessor(/^\+?(\d+(\.\d+)?)%? *OD$/i, "+$1% Overpower Damage"),
+    new RawTextProcessor(/^\+?(\d+(\.\d+)?)%? *TA$/i, "+$1% Total Armor"),
+    new RawTextProcessor(/^\+?(\d+(\.\d+)?)%? *VD$/i, "+$1% Vulnerable Damage"),
+    new RawTextProcessor(/^\+?(\d+) *AS$/i, "+$1 All Stats"),
+    new RawTextProcessor(/^\+?(\d+) *I$/i, "+$1 Intelligence"),
+    new RawTextProcessor(/^\+?(\d+) *LOK$/i, "+$1 Life On Kill"),
+    new RawTextProcessor(/^\+?(\d+) *LRwNDR$/i, "+$1 Life Regeneration while Not Damaged Recently"),
+    new RawTextProcessor(/^\+?(\d+) *ML$/i, "+$1 Maximum Life"),
+    new RawTextProcessor(/^\+?(\d+) *RoC$/i, "+$1 Rank of Caltrops (Rogue Only)"),
+    new RawTextProcessor(/^\+?(\d+) *RoI$/i, "+$1 Rank of Incinerate (Sorcerer Only)"),
+    new RawTextProcessor(/^\+?(\d+) *RoLS$/i, "+$1 Rank of Lightning Spear (Sorcerer Only)"),
+    new RawTextProcessor(/^\+?(\d+) *RoM$/i, "+$1 Rank of Meteor (Sorcerer Only)"),
+    new RawTextProcessor(/^\+?(\d+) *RoSG$/i, "+$1 Rank of Smoke Grenade (Rogue Only)"),
+    new RawTextProcessor(/^\+?(\d+) *S$/i, "+$1 Strength"),
+    new RawTextProcessor(/^\+?(\d+) *W$/i, "+$1 Willpower"),
     new RawTextProcessor(/^=[^=]*$/, "==="),
     new RawTextProcessor(/^EG \+?(\d+(\.\d+))%? MSf1S$/i, "Evade Grants +$1% Movement Speed for 1 Second"),
     new RawTextProcessor(/^ES$/, "Empty Socket"),
-    new RawTextProcessor(/^LHUta *(\d+(\.\d+))%? *CtEINE$/i, "Lucky Hit: Up to a +$1% Chance to Execute Injured Non-Elites"),
-    new RawTextProcessor(/^WIYPAG *(\d+(\.\d+))%? *MLaB$/i, "While Injured, Your Potion Also Grants $1% Maximum Life as Barrier"),
-    new RawTextProcessor(/^WIYPAR *(\d+(\.\d+))%? *R$/i, "While Injured, Your Potion Also Restores $1% Resource"),
+    new RawTextProcessor(/^LHUta *(\d+(\.\d+)?)%? *CtEINE$/i, "Lucky Hit: Up to a +$1% Chance to Execute Injured Non-Elites"),
+    new RawTextProcessor(/^WIYPAG *(\d+(\.\d+)?)%? *MLaB$/i, "While Injured, Your Potion Also Grants $1% Maximum Life as Barrier"),
+    new RawTextProcessor(/^WIYPAG *(\d+(\.\d+)?)%? *MSf2S$/i, "While Injured, Your Potion Also Grants $1% Movement Speed for 2 Seconds"),
+    new RawTextProcessor(/^WIYPAR *(\d+(\.\d+)?)%? *R$/i, "While Injured, Your Potion Also Restores $1% Resource")
 ];
 RawTextProcessor.itemTypeProcessors = [
     new RawTextProcessor(/^Am$/i, "Amulet"),
@@ -242,10 +245,30 @@ class ItemAttributes {
         this.classRequirement = D4piUtilities.sanitize(RawTextProcessor.transform(input.classRequirement, RawTextProcessor.classRequirementProcessors));
     }
     renderDiv(output) {
-        output.style.background = "linear-gradient(0deg, #151411 0%, #1f1a12 75%, #51390c 100%)";
-        output.style.borderImage = "linear-gradient(#866c12, #252218) 1";
+        const lastRarityLevel = this.rarityLevels[this.rarityLevels.length - 1];
+        if (lastRarityLevel === "Common") {
+            output.style.background = "linear-gradient(0deg, #151515 0%, #202020 75%, #606060 100%)";
+            output.style.borderImage = "linear-gradient(#808080, #252525) 1";
+        }
+        else if (lastRarityLevel === "Magic") {
+            output.style.background = "linear-gradient(0deg, #151515 0%, #202040 75%, #202060 100%)";
+            output.style.borderImage = "linear-gradient(#303080, #252525) 1";
+        }
+        else if (lastRarityLevel === "Rare") {
+            output.style.background = "linear-gradient(0deg, #151411 0%, #1f1a12 75%, #51390c 100%)";
+            output.style.borderImage = "linear-gradient(#866c12, #252218) 1";
+        }
+        else if (lastRarityLevel === "Legendary") {
+            output.style.background = "linear-gradient(0deg, #151515 0%, #804820 75%, #F07025 100%)";
+            output.style.borderImage = "linear-gradient(#FFA500, #252525) 1";
+        }
+        else {
+            output.style.background = "linear-gradient(0deg, #151515 0%, #202020 75%, #606060 100%)";
+            output.style.borderImage = "linear-gradient(#808080, #252525) 1";
+        }
         output.style.borderWidth = "5px";
         output.style.borderStyle = "solid";
+        output.style.margin = "1em";
         output.style.padding = "1em";
         output.style.width = "fit-content";
         output.innerHTML = "";
