@@ -1,220 +1,266 @@
 "use strict";
-class RawItemAttributes {
-    constructor(htmlTextAreaElement) {
-        const text = htmlTextAreaElement.value;
-        const lines = text.split(/\r?\n/);
-        this.name = (lines.length > 0) ? lines[0] : "";
-        this.rarityAndType = (lines.length > 1) ? lines[1] : "";
-        this.otherAttributes = (lines.length > 2) ? lines.slice(2) : [];
+class D4piUtilities {
+    static isIgnorable(input) {
+        return (input === undefined
+            || input === null
+            || input === ""
+            || input.charAt(0) === "#"
+            || input.replace(/\s/g, "") === "");
+    }
+    static sanitize(input) {
+        if (input === undefined
+            || input === null
+            || input === "") {
+            return "";
+        }
+        return input.replace(/['"&<>]/g, "");
     }
 }
-class RawItemAttributeProcessor {
-    constructor(rawTextMatcher, RawItemAttributeProcessor) {
-        this.rawTextMatcher = rawTextMatcher;
-        this.RawItemAttributeProcessor = RawItemAttributeProcessor;
+class RawTextProcessor {
+    constructor(inputPattern, outputTemplate) {
+        this.inputPattern = inputPattern;
+        this.outputTemplate = outputTemplate;
     }
-}
-class ItemAttributes {
-    constructor() {
-        this.name = "";
-        this.rarity = "";
-        this.type = "";
-        this.otherAttributes = [];
-        this.levelRequirement = "";
-        this.classRequirement = "";
-    }
-    init1(rawItemAttributes) {
-        this.name = rawItemAttributes.name;
-        const rawRarityText = rawItemAttributes.rarityAndType.replace(/^((A|S)? ?(C|L|M|R|U)).*$/i, "$1");
-        this.rarity = Array.from(rawRarityText.replace(" ", "")).map((c) => { return ItemAttributes.transform(c, ItemAttributes.rarityProcessors); }).join(" ");
-        const rawTypeText = rawItemAttributes.rarityAndType.substring(rawRarityText.length);
-        this.type = ItemAttributes.transform(rawTypeText.replace(" ", ""), ItemAttributes.typeProcessors);
-        while (rawItemAttributes.otherAttributes[rawItemAttributes.otherAttributes.length - 1].replace(/\s/g, "").length == 0) {
-            rawItemAttributes.otherAttributes.pop();
-        }
-        this.classRequirement = "";
-        if (rawItemAttributes.otherAttributes.length > 0) {
-            this.classRequirement = ItemAttributes.transform(rawItemAttributes.otherAttributes[rawItemAttributes.otherAttributes.length - 1], ItemAttributes.classRequirementProcessors);
-            if (this.classRequirement !== "") {
-                rawItemAttributes.otherAttributes.pop();
-            }
-        }
-        this.levelRequirement = "";
-        if (rawItemAttributes.otherAttributes.length > 0) {
-            this.levelRequirement = ItemAttributes.transform(rawItemAttributes.otherAttributes[rawItemAttributes.otherAttributes.length - 1], ItemAttributes.levelRequirementProcessors);
-            if (this.levelRequirement !== "") {
-                rawItemAttributes.otherAttributes.pop();
-            }
-        }
-        this.otherAttributes = [];
-        for (let rawOtherAttribute of rawItemAttributes.otherAttributes) {
-            this.otherAttributes.push(ItemAttributes.transform(rawOtherAttribute, ItemAttributes.attributeProcessors));
-        }
-    }
-    static transform(rawText, processors) {
+    static transform(input, processors) {
+        const sanitizedInput = D4piUtilities.sanitize(input);
         for (let processor of processors) {
-            if (processor.rawTextMatcher.test(rawText)) {
-                return rawText.replace(processor.rawTextMatcher, processor.RawItemAttributeProcessor);
+            if (processor.inputPattern.test(sanitizedInput)) {
+                return sanitizedInput.replace(processor.inputPattern, processor.outputTemplate);
             }
+        }
+        return sanitizedInput;
+    }
+}
+RawTextProcessor.classRequirementProcessors = [
+    new RawTextProcessor(/^B$/i, "Barbarian"),
+    new RawTextProcessor(/^D$/i, "Druid"),
+    new RawTextProcessor(/^N$/i, "Necromancer"),
+    new RawTextProcessor(/^R$/i, "Rogue"),
+    new RawTextProcessor(/^S$/i, "Sorcerer")
+];
+RawTextProcessor.itemAttributesProcessors = [
+    new RawTextProcessor(/^(\d+( \d+)?) ?(IP)?$/i, "$1 Item Power"),
+    new RawTextProcessor(/^(\d+(\.\d+))%? CR$/i, "$1% Cooldown Reduction"),
+    new RawTextProcessor(/^(\d+(\.\d+))%? DR$/i, "$1% Damage Reduction"),
+    new RawTextProcessor(/^(\d+(\.\d+))%? FR$/i, "$1% Fire Resistance"),
+    new RawTextProcessor(/^(\d+(\.\d+))%? LR$/i, "$1% Lightning Resistance"),
+    new RawTextProcessor(/^(\d+(\.\d+))%? MCR$/i, "$1% Mana Cost Reduction"),
+    new RawTextProcessor(/^(\d+(\.\d+))%? SR$/i, "$1% Shadow Resistance"),
+    new RawTextProcessor(/^(\d+) (\d+) DpH$/i, "[$1 - $3] Damage per Hit"),
+    new RawTextProcessor(/^(\d+) A$/i, "$1 Armor"),
+    new RawTextProcessor(/^(\d+) DPS$/i, "$1 Damage Per Second"),
+    new RawTextProcessor(/^(\d+\.\d+) ApS$/i, "$1 Attacks per Second"),
+    new RawTextProcessor(/^(\d+\.\d+) ApSSW$/i, "$1 Attacks per Second (Slow Weapon)"),
+    new RawTextProcessor(/^(\d+\.\d+) ApSVFW$/i, "$1 Attacks per Second (Very Fast Weapon)"),
+    new RawTextProcessor(/^\+?(\d+(\.\d+))%? AS$/i, "+$1% Attack Speed"),
+    new RawTextProcessor(/^\+?(\d+(\.\d+))%? CD$/i, "+$1% Cold Damage"),
+    new RawTextProcessor(/^\+?(\d+(\.\d+))%? CSC$/i, "+$1% Critical Strike Chance"),
+    new RawTextProcessor(/^\+?(\d+(\.\d+))%? CSD$/i, "+$1% Core Skill Damage"),
+    new RawTextProcessor(/^\+?(\d+(\.\d+))%? CSD$/i, "+$1% Critical Strike Damage"),
+    new RawTextProcessor(/^\+?(\d+(\.\d+))%? DtCCE$/i, "+$1% Damage to Crowd Controlled Enemies"),
+    new RawTextProcessor(/^\+?(\d+(\.\d+))%? DtCE$/i, "+$1% Damage to Close Enemies"),
+    new RawTextProcessor(/^\+?(\d+(\.\d+))%? DtSlE$/i, "+$1% Damage to Slowed Enemies"),
+    new RawTextProcessor(/^\+?(\d+(\.\d+))%? DtStE$/i, "+$1% Damage to Stunned Enemies"),
+    new RawTextProcessor(/^\+?(\d+(\.\d+))%? HR$/i, "+$1% Healing Received"),
+    new RawTextProcessor(/^\+?(\d+(\.\d+))%? OD$/i, "+$1% Overpower Damage"),
+    new RawTextProcessor(/^\+?(\d+(\.\d+))%? VD$/i, "+$1% Vulnerable Damage"),
+    new RawTextProcessor(/^\+?(\d+) AS$/i, "+$1 All Stats"),
+    new RawTextProcessor(/^\+?(\d+) I$/i, "+$1 Intelligence"),
+    new RawTextProcessor(/^\+?(\d+) LOK$/i, "+$1 Life On Kill"),
+    new RawTextProcessor(/^\+?(\d+) LRwNDR$/i, "+$1 Life Regeneration while Not Damaged Recently"),
+    new RawTextProcessor(/^\+?(\d+) ML$/i, "+$1 Maximum Life"),
+    new RawTextProcessor(/^\+?(\d+) RoC$/i, "+$1 Rank of Caltrops (Rogue Only)"),
+    new RawTextProcessor(/^\+?(\d+) RoI$/i, "+$1 Rank of Incinerate (Sorcerer Only)"),
+    new RawTextProcessor(/^\+?(\d+) RoLS$/i, "+$1 Rank of Lightning Spear (Sorcerer Only)"),
+    new RawTextProcessor(/^\+?(\d+) RoM$/i, "+$1 Rank of Meteor (Sorcerer Only)"),
+    new RawTextProcessor(/^\+?(\d+) RoSG$/i, "+$1 Rank of Smoke Grenade (Rogue Only)"),
+    new RawTextProcessor(/^\+?(\d+) S$/i, "+$1 Strength"),
+    new RawTextProcessor(/^\+?(\d+) W$/i, "+$1 Willpower"),
+    new RawTextProcessor(/^=[^=]*$/, "==="),
+    new RawTextProcessor(/^EG \+?(\d+(\.\d+))%? MSf1S$/i, "Evade Grants +$1% Movement Speed for 1 Second"),
+    new RawTextProcessor(/^ES$/, "Empty Socket"),
+    new RawTextProcessor(/^LHUta *(\d+(\.\d+))%? *CtEINE$/i, "Lucky Hit: Up to a +$1% Chance to Execute Injured Non-Elites"),
+    new RawTextProcessor(/^WIYPAG *(\d+(\.\d+))%? *MLaB$/i, "While Injured, Your Potion Also Grants $1% Maximum Life as Barrier"),
+    new RawTextProcessor(/^WIYPAR *(\d+(\.\d+))%? *R$/i, "While Injured, Your Potion Also Restores $1% Resource"),
+];
+RawTextProcessor.itemTypeProcessors = [
+    new RawTextProcessor(/^Am$/i, "Amulet"),
+    new RawTextProcessor(/^Ax$/i, "Axe"),
+    new RawTextProcessor(/^Bo$/i, "Boots"),
+    new RawTextProcessor(/^Bw$/i, "Bow"),
+    new RawTextProcessor(/^Ch$/i, "Chest Armor"),
+    new RawTextProcessor(/^Cr$/i, "Crossbow"),
+    new RawTextProcessor(/^D$/i, "Dagger"),
+    new RawTextProcessor(/^F$/i, "Focus"),
+    new RawTextProcessor(/^G$/i, "Gloves"),
+    new RawTextProcessor(/^H$/i, "Helm"),
+    new RawTextProcessor(/^M$/i, "Mace"),
+    new RawTextProcessor(/^Pa$/i, "Pants"),
+    new RawTextProcessor(/^Po$/i, "Polearm"),
+    new RawTextProcessor(/^R$/i, "Ring"),
+    new RawTextProcessor(/^Sc$/i, "Scythe"),
+    new RawTextProcessor(/^Sh$/i, "Shield"),
+    new RawTextProcessor(/^St$/i, "Staff"),
+    new RawTextProcessor(/^Sw$/i, "Sword"),
+    new RawTextProcessor(/^TA$/i, "Two-Handed Axe"),
+    new RawTextProcessor(/^TM$/i, "Two-Handed Mace"),
+    new RawTextProcessor(/^TSc$/i, "Two-Handed Scythe"),
+    new RawTextProcessor(/^TSw$/i, "Two-Handed Sword"),
+    new RawTextProcessor(/^W$/i, "Wand")
+];
+RawTextProcessor.levelRequirementProcessors = [
+    new RawTextProcessor(/^RL *(\d+)$/i, "Requires Level $1")
+];
+RawTextProcessor.rarityLevelProcessors = [
+    new RawTextProcessor(/^A$/i, "Ancestral"),
+    new RawTextProcessor(/^C$/i, "Common"),
+    new RawTextProcessor(/^L$/i, "Legendary"),
+    new RawTextProcessor(/^M$/i, "Magic"),
+    new RawTextProcessor(/^R$/i, "Rare"),
+    new RawTextProcessor(/^S$/i, "Sacred"),
+    new RawTextProcessor(/^U$/i, "Unique")
+];
+class RawItemAttributes {
+    constructor(input) {
+        this.name = "";
+        this.rarityLevels = [];
+        this.itemType = "";
+        this.otherAttributes = [];
+        this.levelRequirement = "";
+        this.classRequirement = "";
+        const sanitizedInput = D4piUtilities.sanitize(input);
+        const sanitizedLines = sanitizedInput.split(/\n|\r/);
+        const nonIgnorableSanitizedLines = sanitizedLines.filter(line => !D4piUtilities.isIgnorable(line));
+        if (nonIgnorableSanitizedLines.length > 0) {
+            this.name = nonIgnorableSanitizedLines.shift();
+        }
+        if (nonIgnorableSanitizedLines.length > 0) {
+            const firstLine = nonIgnorableSanitizedLines.shift();
+            const rawRarityLevel = firstLine.replace(/^((A|S)? *(C|L|M|R|U)).*$/i, "$1");
+            this.rarityLevels = Array.from(rawRarityLevel.replace(/\s/g, ""));
+            const rawItemType = firstLine.substring(rawRarityLevel.length);
+            this.itemType = rawItemType.replace(/\s/g, "");
+        }
+        if (nonIgnorableSanitizedLines.length > 0) {
+            const lastLine = nonIgnorableSanitizedLines[nonIgnorableSanitizedLines.length - 1];
+            if (RawTextProcessor.classRequirementProcessors.some(processor => processor.inputPattern.test(lastLine))) {
+                this.classRequirement = nonIgnorableSanitizedLines.pop();
+            }
+        }
+        if (nonIgnorableSanitizedLines.length > 0) {
+            const lastLine = nonIgnorableSanitizedLines[nonIgnorableSanitizedLines.length - 1];
+            if (RawTextProcessor.levelRequirementProcessors.some(processor => processor.inputPattern.test(lastLine))) {
+                this.levelRequirement = nonIgnorableSanitizedLines.pop();
+            }
+        }
+        if (nonIgnorableSanitizedLines.length > 0) {
+            this.otherAttributes = nonIgnorableSanitizedLines;
+        }
+    }
+    renderAnchor(output) {
+        const encodedData = this.encode();
+        const itemLink = "https://d4pi.com/view/#" + encodedData;
+        output.href = itemLink;
+        output.text = itemLink;
+    }
+    encode() {
+        return encodeURIComponent(this.encode_0_2_0_0());
+    }
+    encode_0_2_0_0() {
+        let output = RawItemAttributes.encoderID_0_2_0_0 + RawItemAttributes.newline;
+        output += this.name + RawItemAttributes.newline;
+        output += this.rarityLevels.length + RawItemAttributes.newline;
+        for (let level of this.rarityLevels) {
+            output += level + RawItemAttributes.newline;
+        }
+        output += this.itemType + RawItemAttributes.newline;
+        output += this.otherAttributes.length + RawItemAttributes.newline;
+        for (let attribute of this.otherAttributes) {
+            output += attribute + RawItemAttributes.newline;
+        }
+        output += this.levelRequirement + RawItemAttributes.newline;
+        output += this.classRequirement + RawItemAttributes.newline;
+        return output;
+    }
+    static decode(input) {
+        const decodedInput = decodeURIComponent(input);
+        if (decodedInput.startsWith(RawItemAttributes.encoderID_0_2_0_0)) {
+            return RawItemAttributes.decode_0_2_0_0(decodedInput);
         }
         return "";
     }
-    renderDiv(htmlDivElement) {
-        htmlDivElement.style.background = "linear-gradient(0deg, #151411 0%, #1f1a12 75%, #51390c 100%)";
-        htmlDivElement.style.borderImage = "linear-gradient(#866c12, #252218) 1";
-        htmlDivElement.style.borderWidth = "5px";
-        htmlDivElement.style.borderStyle = "solid";
-        htmlDivElement.style.padding = "1em";
-        htmlDivElement.style.width = "fit-content";
-        htmlDivElement.innerHTML = "";
-        htmlDivElement.innerHTML += "<p>" + ItemAttributes.sanitize(this.name) + "</p>";
-        htmlDivElement.innerHTML += "<p>" + ItemAttributes.sanitize(this.rarity + " " + this.type) + "</p>";
-        for (let otherAttribute of this.otherAttributes) {
-            const sanitizedText = ItemAttributes.sanitize(otherAttribute);
-            if (sanitizedText === "---") {
-                htmlDivElement.innerHTML += "<hr>";
-            }
-            else {
-                htmlDivElement.innerHTML += "<p>" + ItemAttributes.sanitize(sanitizedText) + "</p>";
+    static decode_0_2_0_0(input) {
+        let inputLines = input.split(RawItemAttributes.newline);
+        const outputLines = [];
+        if (inputLines.length > 0) {
+            inputLines.shift();
+        }
+        if (inputLines.length > 0) {
+            outputLines.push(inputLines.shift());
+        }
+        if (inputLines.length > 0) {
+            let rarityLevelCount = Number(inputLines.shift());
+            if (rarityLevelCount > 0 && inputLines.length > rarityLevelCount) {
+                outputLines.push(inputLines.slice(0, rarityLevelCount).join(" "));
+                inputLines = inputLines.slice(rarityLevelCount, inputLines.length);
             }
         }
-        htmlDivElement.innerHTML += "<p class=\"text-end\">" + ItemAttributes.sanitize(this.levelRequirement) + "</p>";
-        htmlDivElement.innerHTML += "<p class=\"text-end\">" + ItemAttributes.sanitize(this.classRequirement) + "</p>";
-    }
-    static sanitize(str) {
-        return str.replace(/['"&<>]/g, "?");
-    }
-    encode_0_1() {
-        // encodeURIComponent
-        let ret = "0.1__";
-        ret += this.name + "__";
-        ret += this.rarity + "__";
-        ret += this.type + "__";
-        ret += this.levelRequirement + "__";
-        ret += this.classRequirement + "__";
-        ret += this.otherAttributes.join("__");
-        return encodeURIComponent(ret);
-    }
-    decode_0_1(encodedText) {
-        encodedText = decodeURIComponent(encodedText);
-        const separator = "__";
-        let i = encodedText.indexOf(separator);
-        encodedText = encodedText.substring(i + separator.length);
-        i = encodedText.indexOf(separator);
-        this.name = encodedText.substring(0, i);
-        encodedText = encodedText.substring(i + separator.length);
-        i = encodedText.indexOf(separator);
-        this.rarity = encodedText.substring(0, i);
-        encodedText = encodedText.substring(i + separator.length);
-        i = encodedText.indexOf(separator);
-        this.type = encodedText.substring(0, i);
-        encodedText = encodedText.substring(i + separator.length);
-        i = encodedText.indexOf(separator);
-        this.levelRequirement = encodedText.substring(0, i);
-        encodedText = encodedText.substring(i + separator.length);
-        i = encodedText.indexOf(separator);
-        this.classRequirement = encodedText.substring(0, i);
-        encodedText = encodedText.substring(i + separator.length);
-        while ((i = encodedText.indexOf(separator)) !== -1) {
-            this.otherAttributes.push(encodedText.substring(0, i));
-            encodedText = encodedText.substring(i + separator.length);
+        if (inputLines.length > 0) {
+            outputLines[outputLines.length - 1] += " " + inputLines.shift();
         }
-    }
-    renderAnchor(htmlAnchorElement) {
-        const encodedText = this.encode_0_1();
-        htmlAnchorElement.href = "https://d4pi.com/view/#" + encodedText;
-        htmlAnchorElement.text = "https://d4pi.com/view/#" + encodedText;
-    }
-    init2(encodedText) {
-        this.decode_0_1(encodedText);
+        if (inputLines.length > 0) {
+            let otherAttributesCount = Number(inputLines.shift());
+            if (otherAttributesCount > 0 && inputLines.length > otherAttributesCount) {
+                outputLines.push(inputLines.slice(0, otherAttributesCount).join(RawItemAttributes.newline));
+                inputLines = inputLines.slice(otherAttributesCount, inputLines.length);
+            }
+        }
+        if (inputLines.length > 0) {
+            outputLines.push(inputLines.shift());
+        }
+        if (inputLines.length > 0) {
+            outputLines.push(inputLines.shift());
+        }
+        return outputLines.join(RawItemAttributes.newline);
     }
 }
-ItemAttributes.rarityProcessors = [
-    new RawItemAttributeProcessor(/^A$/i, "Ancestral"),
-    new RawItemAttributeProcessor(/^S$/i, "Sacred"),
-    new RawItemAttributeProcessor(/^C$/i, "Common"),
-    new RawItemAttributeProcessor(/^L$/i, "Legendary"),
-    new RawItemAttributeProcessor(/^M$/i, "Magic"),
-    new RawItemAttributeProcessor(/^R$/i, "Rare"),
-    new RawItemAttributeProcessor(/^U$/i, "Unique")
-];
-ItemAttributes.typeProcessors = [
-    new RawItemAttributeProcessor(/^Am$/i, "Amulet"),
-    new RawItemAttributeProcessor(/^Ax$/i, "Axe"),
-    new RawItemAttributeProcessor(/^Bo$/i, "Boots"),
-    new RawItemAttributeProcessor(/^Bw$/i, "Bow"),
-    new RawItemAttributeProcessor(/^Ch$/i, "Chest Armor"),
-    new RawItemAttributeProcessor(/^Cr$/i, "Crossbow"),
-    new RawItemAttributeProcessor(/^D$/i, "Dagger"),
-    new RawItemAttributeProcessor(/^F$/i, "Focus"),
-    new RawItemAttributeProcessor(/^G$/i, "Gloves"),
-    new RawItemAttributeProcessor(/^H$/i, "Helm"),
-    new RawItemAttributeProcessor(/^M$/i, "Mace"),
-    new RawItemAttributeProcessor(/^Pa$/i, "Pants"),
-    new RawItemAttributeProcessor(/^Po$/i, "Polearm"),
-    new RawItemAttributeProcessor(/^R$/i, "Ring"),
-    new RawItemAttributeProcessor(/^Sc$/i, "Scythe"),
-    new RawItemAttributeProcessor(/^Sh$/i, "Shield"),
-    new RawItemAttributeProcessor(/^St$/i, "Staff"),
-    new RawItemAttributeProcessor(/^Sw$/i, "Sword"),
-    new RawItemAttributeProcessor(/^TA$/i, "Two-Handed Axe"),
-    new RawItemAttributeProcessor(/^TM$/i, "Two-Handed Mace"),
-    new RawItemAttributeProcessor(/^TSc$/i, "Two-Handed Scythe"),
-    new RawItemAttributeProcessor(/^TSw$/i, "Two-Handed Sword"),
-    new RawItemAttributeProcessor(/^W$/i, "Wand")
-];
-ItemAttributes.attributeProcessors = [
-    new RawItemAttributeProcessor(/^-+$/, "---"),
-    new RawItemAttributeProcessor(/^(\d+( \d+)?) ?(IP)?$/i, "$1 Item Power"),
-    new RawItemAttributeProcessor(/^(\d+(\.\d+))%? CR$/i, "$1% Cooldown Reduction"),
-    new RawItemAttributeProcessor(/^(\d+(\.\d+))%? DR$/i, "$1% Damage Reduction"),
-    new RawItemAttributeProcessor(/^(\d+(\.\d+))%? FR$/i, "$1% Fire Resistance"),
-    new RawItemAttributeProcessor(/^(\d+(\.\d+))%? LR$/i, "$1% Lightning Resistance"),
-    new RawItemAttributeProcessor(/^(\d+(\.\d+))%? MCR$/i, "$1% Mana Cost Reduction"),
-    new RawItemAttributeProcessor(/^(\d+(\.\d+))%? SR$/i, "$1% Shadow Resistance"),
-    new RawItemAttributeProcessor(/^(\d+) (\d+) DpH$/i, "[$1 - $3] Damage per Hit"),
-    new RawItemAttributeProcessor(/^(\d+) A$/i, "$1 Armor"),
-    new RawItemAttributeProcessor(/^(\d+) DPS$/i, "$1 Damage Per Second"),
-    new RawItemAttributeProcessor(/^(\d+\.\d+) ApS$/i, "$1 Attacks per Second"),
-    new RawItemAttributeProcessor(/^(\d+\.\d+) ApSSW$/i, "$1 Attacks per Second (Slow Weapon)"),
-    new RawItemAttributeProcessor(/^(\d+\.\d+) ApSVFW$/i, "$1 Attacks per Second (Very Fast Weapon)"),
-    new RawItemAttributeProcessor(/^\+?(\d+(\.\d+))%? AS$/i, "+$1% Attack Speed"),
-    new RawItemAttributeProcessor(/^\+?(\d+(\.\d+))%? CD$/i, "+$1% Cold Damage"),
-    new RawItemAttributeProcessor(/^\+?(\d+(\.\d+))%? CSC$/i, "+$1% Critical Strike Chance"),
-    new RawItemAttributeProcessor(/^\+?(\d+(\.\d+))%? CSD$/i, "+$1% Core Skill Damage"),
-    new RawItemAttributeProcessor(/^\+?(\d+(\.\d+))%? CSD$/i, "+$1% Critical Strike Damage"),
-    new RawItemAttributeProcessor(/^\+?(\d+(\.\d+))%? DtCCE$/i, "+$1% Damage to Crowd Controlled Enemies"),
-    new RawItemAttributeProcessor(/^\+?(\d+(\.\d+))%? DtCE$/i, "+$1% Damage to Close Enemies"),
-    new RawItemAttributeProcessor(/^\+?(\d+(\.\d+))%? DtSlE$/i, "+$1% Damage to Slowed Enemies"),
-    new RawItemAttributeProcessor(/^\+?(\d+(\.\d+))%? DtStE$/i, "+$1% Damage to Stunned Enemies"),
-    new RawItemAttributeProcessor(/^\+?(\d+(\.\d+))%? HR$/i, "+$1% Healing Received"),
-    new RawItemAttributeProcessor(/^\+?(\d+(\.\d+))%? OD$/i, "+$1% Overpower Damage"),
-    new RawItemAttributeProcessor(/^\+?(\d+(\.\d+))%? VD$/i, "+$1% Vulnerable Damage"),
-    new RawItemAttributeProcessor(/^\+?(\d+) AS$/i, "+$1 All Stats"),
-    new RawItemAttributeProcessor(/^\+?(\d+) I$/i, "+$1 Intelligence"),
-    new RawItemAttributeProcessor(/^\+?(\d+) LOK$/i, "+$1 Life On Kill"),
-    new RawItemAttributeProcessor(/^\+?(\d+) LRwNDR$/i, "+$1 Life Regeneration while Not Damaged Recently"),
-    new RawItemAttributeProcessor(/^\+?(\d+) ML$/i, "+$1 Maximum Life"),
-    new RawItemAttributeProcessor(/^\+?(\d+) RoC$/i, "+$1 Rank of Caltrops (Rogue Only)"),
-    new RawItemAttributeProcessor(/^\+?(\d+) RoI$/i, "+$1 Rank of Incinerate (Sorcerer Only)"),
-    new RawItemAttributeProcessor(/^\+?(\d+) RoLS$/i, "+$1 Rank of Lightning Spear (Sorcerer Only)"),
-    new RawItemAttributeProcessor(/^\+?(\d+) RoM$/i, "+$1 Rank of Meteor (Sorcerer Only)"),
-    new RawItemAttributeProcessor(/^\+?(\d+) RoSG$/i, "+$1 Rank of Smoke Grenade (Rogue Only)"),
-    new RawItemAttributeProcessor(/^\+?(\d+) S$/i, "+$1 Strength"),
-    new RawItemAttributeProcessor(/^\+?(\d+) W$/i, "+$1 Willpower"),
-    new RawItemAttributeProcessor(/^EG \+?(\d+(\.\d+))%? MSf1S$/i, "Evade Grants +$1% Movement Speed for 1 Second"),
-    new RawItemAttributeProcessor(/^ES$/, "Empty Socket"),
-    new RawItemAttributeProcessor(/^LHUta *(\d+(\.\d+))%? *CtEINE$/i, "Lucky Hit: Up to a +$1% Chance to Execute Injured Non-Elites"),
-    new RawItemAttributeProcessor(/^WIYPAG *(\d+(\.\d+))%? *MLaB$/i, "While Injured, Your Potion Also Grants $1% Maximum Life as Barrier"),
-    new RawItemAttributeProcessor(/^WIYPAR *(\d+(\.\d+))%? *R$/i, "While Injured, Your Potion Also Restores $1% Resource"),
-];
-ItemAttributes.levelRequirementProcessors = [
-    new RawItemAttributeProcessor(/^RL *(\d+)$/i, "Requires Level $1")
-];
-ItemAttributes.classRequirementProcessors = [
-    new RawItemAttributeProcessor(/^B$/i, "Barbarian"),
-    new RawItemAttributeProcessor(/^D$/i, "Druid"),
-    new RawItemAttributeProcessor(/^N$/i, "Necromancer"),
-    new RawItemAttributeProcessor(/^R$/i, "Rogue"),
-    new RawItemAttributeProcessor(/^S$/i, "Sorcerer")
-];
+RawItemAttributes.newline = "\n";
+RawItemAttributes.encoderID_0_2_0_0 = "0.2.0.0&";
+class ItemAttributes {
+    constructor(input) {
+        this.name = "";
+        this.rarityLevels = [];
+        this.itemType = "";
+        this.otherAttributes = [];
+        this.levelRequirement = "";
+        this.classRequirement = "";
+        this.name = D4piUtilities.sanitize(input.name);
+        this.rarityLevels = input.rarityLevels.map(level => D4piUtilities.sanitize(RawTextProcessor.transform(level, RawTextProcessor.rarityLevelProcessors)));
+        this.itemType = D4piUtilities.sanitize(RawTextProcessor.transform(input.itemType, RawTextProcessor.itemTypeProcessors));
+        this.otherAttributes = input.otherAttributes.map(attribute => D4piUtilities.sanitize(RawTextProcessor.transform(attribute, RawTextProcessor.itemAttributesProcessors)));
+        this.levelRequirement = D4piUtilities.sanitize(RawTextProcessor.transform(input.levelRequirement, RawTextProcessor.levelRequirementProcessors));
+        this.classRequirement = D4piUtilities.sanitize(RawTextProcessor.transform(input.classRequirement, RawTextProcessor.classRequirementProcessors));
+    }
+    renderDiv(output) {
+        output.style.background = "linear-gradient(0deg, #151411 0%, #1f1a12 75%, #51390c 100%)";
+        output.style.borderImage = "linear-gradient(#866c12, #252218) 1";
+        output.style.borderWidth = "5px";
+        output.style.borderStyle = "solid";
+        output.style.padding = "1em";
+        output.style.width = "fit-content";
+        output.innerHTML = "";
+        output.innerHTML += "<p>" + D4piUtilities.sanitize(this.name) + "</p>";
+        output.innerHTML += "<p>" + D4piUtilities.sanitize(this.rarityLevels.join(" ") + " " + this.itemType) + "</p>";
+        for (let attribute of this.otherAttributes) {
+            const sanitizedAttribute = D4piUtilities.sanitize(attribute);
+            if (sanitizedAttribute === "===") {
+                output.innerHTML += "<hr>";
+            }
+            else {
+                output.innerHTML += "<p>" + sanitizedAttribute + "</p>";
+            }
+        }
+        output.innerHTML += "<p class=\"text-end\">" + D4piUtilities.sanitize(this.levelRequirement) + "</p>";
+        output.innerHTML += "<p class=\"text-end\">" + D4piUtilities.sanitize(this.classRequirement) + "</p>";
+    }
+}
