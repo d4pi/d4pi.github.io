@@ -1,17 +1,17 @@
 "use strict";
 {
-    const rawItemAttributesTextArea = document.getElementById("raw-item-attributes");
-    const itemAttributesDiv = document.getElementById("item-attributes");
+    const rawInputTextArea = document.getElementById("raw-input");
+    const itemTextDiv = document.getElementById("item-text");
     const itemLinkAnchor = document.getElementById("item-link");
-    function rawItemAttributesTextArea_InputEventHandler() {
-        const rawItemAttributes = new RawItemAttributes(rawItemAttributesTextArea.value);
+    function rawInputTextArea_Input_EventHandler() {
+        const rawItemAttributes = new RawInput(rawInputTextArea.value);
         rawItemAttributes.renderAnchor(itemLinkAnchor);
         const itemAttributes = new ItemAttributes(rawItemAttributes);
-        itemAttributes.renderDiv(itemAttributesDiv);
+        itemAttributes.renderDiv(itemTextDiv);
     }
-    rawItemAttributesTextArea.addEventListener("input", rawItemAttributesTextArea_InputEventHandler);
+    rawInputTextArea.addEventListener("input", rawInputTextArea_Input_EventHandler);
     const hash = window.location.hash;
-    const encodedText = (hash.length > 0) ? hash.substring(1) : "";
-    rawItemAttributesTextArea.value = RawItemAttributes.decode(encodedText);
-    rawItemAttributesTextArea_InputEventHandler();
+    const encodedText = (hash.length > 0) ? hash.substring("#".length) : "";
+    rawInputTextArea.value = RawInput.decode(encodedText);
+    rawInputTextArea_Input_EventHandler();
 }

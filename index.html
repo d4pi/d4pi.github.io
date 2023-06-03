@@ -10,8 +10,8 @@
 
     <title>D4pi.com</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootswatch@5.2.3/dist/cyborg/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-giIk+Eta5y0U+/kxE2vZ/tQB7AahDQxQ2zrIqTiavVKE3Uuedz8uN5EcyUS6axwR" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.0/dist/cyborg/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-U9pN+23sGITQ0jjSA72lGh4ppaS9UWRPFTfNUhriKUaG3SRACqJeGzAA2QUHFi+g" crossorigin="anonymous">
 
 </head>
 
@@ -19,7 +19,7 @@
 
     <h1 class="text-center">Show/Share <span style="color: red">Diablo 4</span> Item as Text/Link</h1>
 
-    <p class="text-center text-muted">0.3.5</p>
+    <p class="text-center text-muted">0.4.0</p>
 
     <div class="container">
 
@@ -31,57 +31,12 @@
 
                     <h2 class="label">1. Edit Item Attributes Here</h2>
 
-                    <textarea id="raw-item-attributes" class="font-monospace" rows="30" cols="60">
-# Item Name
-
-Masked Work
-
-# Abbreviated Item Rarity Level & Item Type
-
-s r h
-
-# Other Item Attributes
-
-281 ip
-
-=
-
-# Item Attributes can be entered as-is.
-
-351 Armor
-
-=
-
-# Item Attributes can be entered with case-insensitive abbreviations/acronyms.
-
-+3.3% CSC
-+18 i
-WIYPAG 25% MSf2S
-
-=
-
-# Item Attributes can be entered without punctuation.
-
-5CSD
-10LRwNDR
-2.5ta
-
-=
-
-# Last 2 lines: Level & Class Requirements
-RL 17
-S
-
-# Lines starting with `#` are ignored.
-
-# Empty-ish lines are ignored.
-
-# Lines starting with `=` are treated as separators.
-                    </textarea>
+                    <textarea id="raw-input" class="font-monospace" rows="30" cols="60"></textarea>
 
                     <h5>Item Rarity Levels</h5>
 
                     <p>
+
                         <code>A</code> Ancestral
                         <code>C</code> Common
                         <code>L</code> Legendary
@@ -89,11 +44,13 @@ S
                         <code>R</code> Rare
                         <code>S</code> Sacred
                         <code>U</code> Unique
+
                     </p>
 
                     <h5>Item Types</h5>
 
                     <p>
+
                         <code>Am</code> Amulet
                         <code>Ax</code> Axe
                         <code>Bo</code> Boots
@@ -117,6 +74,7 @@ S
                         <code>TSc</code> Two-Handed Scythe
                         <code>TSw</code> Two-Handed Sword
                         <code>W</code> Wand
+
                     </p>
 
                 </div>
@@ -127,7 +85,7 @@ S
 
                 <h3 class="label">2. Show Item as Text</h3>
 
-                <div id="item-attributes"></div>
+                <div id="item-text"></div>
 
                 <h3 class="label">3. Share Item as Link</h3>
 
@@ -140,28 +98,38 @@ S
                 <hr>
 
                 <div class="text-muted">
+
                     Developer Notes
+
                     <ul>
-                        <li>Work-in-Progress: Ensure all available item attributes are properly supported and
+
+                        <li>
+                            Work-in-Progress: Ensure all available item attributes are properly supported and
                             documented.
                         </li>
+
                         <li>To-Do: aesthetic improvements</li>
+
                         <li>Research: item-screenshot-to-text conversion</li>
+
                     </ul>
+
                     <a href="https://github.com/d4pi/d4pi.github.io">Source Code</a>
+
                 </div>
 
             </div>
 
         </div>
 
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
             crossorigin="anonymous"></script>
 
-        <script src="d4pi.js"></script>
+        <script src="/d4pi.js"></script>
 
         <script src="index.js"></script>
+
 </body>
 
 </html>
