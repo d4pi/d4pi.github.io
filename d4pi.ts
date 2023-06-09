@@ -47,7 +47,7 @@ class InputProcessor {
     ];
 
     static attributeProcessors: InputProcessor[] = [
-        new InputProcessor(/^(\d+((\+| )\d+)?) ?(IP)?$/i, "$1 Item Power"),
+        new InputProcessor(/^(\d+((\+| )\d+)?) *IP$/i, "$1 Item Power"),
         new InputProcessor(/^(\d+(\.\d+))%? *CR$/i, "$1% Cooldown Reduction"),
         new InputProcessor(/^(\d+(\.\d+))%? *DR$/i, "$1% Damage Reduction"),
         new InputProcessor(/^(\d+(\.\d+))%? *FR$/i, "$1% Fire Resistance"),

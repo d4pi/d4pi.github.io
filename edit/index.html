@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>D4pi.com</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.0/dist/cyborg/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-U9pN+23sGITQ0jjSA72lGh4ppaS9UWRPFTfNUhriKUaG3SRACqJeGzAA2QUHFi+g" crossorigin="anonymous">
+
+</head>
+
+<body>
+
+    <h1 class="text-center">Show/Share <span style="color: red">Diablo 4</span> Item as Text/Link</h1>
+
+    <p class="text-center text-muted">0.4.0</p>
+
+    <div class="container">
+
+        <div class="row">
+
+            <div class="col">
+
+                <div>
+
+                    <h2 class="label">1. Load Item Screenshot</h2>
+
+                    <div>
+                        <label for="raw-file">File</label>
+                        <input id="raw-file" name="raw-file" type="file" accept="image/*">
+                        <!-- <input id="raw-file" type="file" accept="image/*" multiple> -->
+                    </div>
+
+                    <div>
+                        <label for="raw-url">URL</label>
+                        <input id="raw-url" type="url" name="raw-url">
+                        <!-- text area -->
+                    </div>
+
+                    <div>
+                        <img id="raw-image">
+                        <p>Left-click on the loaded screenshot to recognize text (which will take a few seconds)</p>
+                    </div>
+
+                    <h2 class="label">2. Edit Item Attributes Here</h2>
+
+                    <textarea id="raw-input" class="font-monospace" rows="30" cols="60"></textarea>
+
+                    <h5>Item Rarity Levels</h5>
+
+                    <p>
+
+                        <code>A</code> Ancestral
+                        <code>C</code> Common
+                        <code>L</code> Legendary
+                        <code>M</code> Magic
+                        <code>R</code> Rare
+                        <code>S</code> Sacred
+                        <code>U</code> Unique
+
+                    </p>
+
+                    <h5>Item Types</h5>
+
+                    <p>
+
+                        <code>Am</code> Amulet
+                        <code>Ax</code> Axe
+                        <code>Bo</code> Boots
+                        <code>Bw</code> Bow
+                        <code>Ch</code> Chest Armor
+                        <code>Cr</code> Crossbow
+                        <code>D</code> Dagger
+                        <code>F</code> Focus
+                        <code>G</code> Gloves
+                        <code>H</code> Helm
+                        <code>M</code> Mace
+                        <code>Pa</code> Pants
+                        <code>Po</code> Polearm
+                        <code>R</code> Ring
+                        <code>Sc</code> Scythe
+                        <code>Sh</code> Shield
+                        <code>St</code> Staff
+                        <code>Sw</code> Sword
+                        <code>TA</code> Two-Handed Axe
+                        <code>TM</code> Two-Handed Mace
+                        <code>TSc</code> Two-Handed Scythe
+                        <code>TSw</code> Two-Handed Sword
+                        <code>W</code> Wand
+
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="col">
+
+                <h3 class="label">3. Show Item as Text</h3>
+
+                <div id="item-text"></div>
+
+                <h3 class="label">4. Share Item as Link</h3>
+
+                <p>
+
+                    <a id="item-link" class="w-auto text-break" href=""></a>
+
+                </p>
+
+                <hr>
+
+                <div class="text-muted">
+
+                    Developer Notes
+
+                    <ul>
+
+                        <li>
+                            Work-in-Progress: Ensure all available item attributes are properly supported and
+                            documented.
+                        </li>
+
+                        <li>To-Do: aesthetic improvements</li>
+
+                        <li>Research: item-screenshot-to-text conversion</li>
+
+                    </ul>
+
+                    <a href="https://github.com/d4pi/d4pi.github.io">Source Code</a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+            crossorigin="anonymous"></script>
+
+        <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4.1.0/dist/tesseract.min.js"
+            integrity="sha384-Kzi8/nGMdUMdzw1foNfCdpsge43pL1pml7Q1QjyKk9jhjVyNmR4ZThu5jtsXEu1b"
+            crossorigin="anonymous"></script>
+
+        <script src="/d4pi.js"></script>
+
+        <script src="index.js"></script>
+
+        <script>
+            const rawImageImage = document.getElementById("raw-image");
+            const rawInputTextArea = document.getElementById("raw-input");
+
+            rawImageImage.addEventListener("click", () => {
+                Tesseract.recognize(
+                    rawImageImage.src,
+                    'eng',
+                    { logger: m => console.log(m) }
+                ).then(({ data: { text } }) => {
+                    rawInputTextArea.value = text;
+                })
+            });
+        </script>
+</body>
+
+</html>
