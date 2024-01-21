@@ -3,10 +3,10 @@
 
 'use strict';
 
-var d4pi_isOpencvRuntimeInitialized = false;
+var _isOpencvRuntimeInitialized = false;
 
 var Module = {
     onRuntimeInitialized() {
-        d4pi_isOpencvRuntimeInitialized = true;
+        _isOpencvRuntimeInitialized = true;
     }
 };

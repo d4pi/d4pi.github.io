@@ -1,3 +1,5 @@
+// This must be loaded last.
+
 'use strict';
 
-var d4pi_isCodeLoaded = true;
+var _isCodeLoaded = true;

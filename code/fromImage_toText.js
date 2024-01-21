@@ -1,9 +1,9 @@
 'use strict';
 
-var d4pi_textData = {};
+var _textData = {};
 
-function d4pi_fromImage_toText(
-    text_dataId,
+function _fromImage_toText(
+    text_data_id,
     textImage_canvas
 ) {
     Tesseract.recognize(
@@ -11,9 +11,9 @@ function d4pi_fromImage_toText(
         'eng',
         {}
     ).catch(() => {
-        d4pi_textData[text_dataId] = newTextData(0, '', []);
+        _textData[text_data_id] = newTextData(0, '', []);
     }).then(result => {
-        d4pi_textData[text_dataId] = newTextData(
+        _textData[text_data_id] = newTextData(
             result.data.confidence,
             result.data.text,
             result.data.words.map(word => word.text)

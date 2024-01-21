@@ -1,14 +1,14 @@
 'use strict';
 
-var d4pi_itemImageData = {};
+var _itemImageData = {};
 
-function d4pi_fromInputImage_toTextImage(
-    inputImage_afterBrightnessThreshold_canvasId,
-    inputImage_afterItemImageDetection_canvasId,
+function _fromInputImage_toTextImage(
+    inputImage_afterBrightnessThreshold_canvas_id,
+    inputImage_afterItemImageDetection_canvas_id,
     inputImage_image,
-    itemImage_canvasId,
-    itemImage_dataId,
-    textImage_canvasId,
+    itemImage_canvas_id,
+    itemImage_data_id,
+    textImage_canvas_id,
     screenshot_processor_InputImageBrightnessThreshold,
     screenshot_processor_ItemImageMaxWidth,
     screenshot_processor_ItemImageMinWidth,
@@ -23,7 +23,7 @@ function d4pi_fromInputImage_toTextImage(
     const d4pi_blurAnchor = new cv.Point(-1, -1);
     cv.blur(inputImage, inputImage, d4pi_blurKernelSize, d4pi_blurAnchor, cv.BORDER_DEFAULT);
     cv.threshold(inputImage, inputImage, screenshot_processor_InputImageBrightnessThreshold, 255, cv.THRESH_BINARY);
-    cv.imshow(inputImage_afterBrightnessThreshold_canvasId, inputImage);
+    cv.imshow(inputImage_afterBrightnessThreshold_canvas_id, inputImage);
     cv.Canny(inputImage, inputImage, 50, 100, 3, true);
     const contours = new cv.MatVector();
     const hierarchy = new cv.Mat();
@@ -39,7 +39,7 @@ function d4pi_fromInputImage_toTextImage(
     const itemImageMinArea = screenshot_processor_ItemImageMinWidth * screenshot_processor_ItemImageMinWidth;
     const itemImageMinPerimeter = screenshot_processor_ItemImageMinWidth * 4;
     const d4pi_boundingRectangleCandidate_color = new cv.Scalar(0, 160, 0);
-    d4pi_itemImageData[itemImage_dataId] = {
+    _itemImageData[itemImage_data_id] = {
         candidates: [],
         winner: newRectangleData(0, 0, 0, 0)
     };
@@ -70,7 +70,7 @@ function d4pi_fromInputImage_toTextImage(
                     && itemImageMinPerimeter <= polygonArcLength
                 ) {
                     drawContours_color = d4pi_boundingRectangleCandidate_color;
-                    const itemImage_data = d4pi_itemImageData[itemImage_dataId];
+                    const itemImage_data = _itemImageData[itemImage_data_id];
                     const _newRectangleData = newRectangleData(
                         boundingRectangle.x,
                         boundingRectangle.y,
@@ -107,7 +107,7 @@ function d4pi_fromInputImage_toTextImage(
         cv.drawContours(inputImage_ItemImageDetection_report, convexHulls, i, d4pi_convexHull_color);
     }
     convexHulls.delete();
-    const itemImage_data = d4pi_itemImageData[itemImage_dataId];
+    const itemImage_data = _itemImageData[itemImage_data_id];
     let itemImage = null;
     if (itemImage_data.candidates.length === 0) {
         itemImage = cv.imread(inputImage_image);
@@ -125,9 +125,9 @@ function d4pi_fromInputImage_toTextImage(
         itemImage = inputImage.roi(itemImage_data.winner);
         inputImage.delete();
     }
-    cv.imshow(inputImage_afterItemImageDetection_canvasId, inputImage_ItemImageDetection_report);
+    cv.imshow(inputImage_afterItemImageDetection_canvas_id, inputImage_ItemImageDetection_report);
     inputImage_ItemImageDetection_report.delete();
-    cv.imshow(itemImage_canvasId, itemImage);
+    cv.imshow(itemImage_canvas_id, itemImage);
     const textImage = new cv.Mat();
     cv.cvtColor(itemImage, textImage, cv.COLOR_RGBA2GRAY, 0);
     itemImage.delete();
@@ -157,7 +157,7 @@ function d4pi_fromInputImage_toTextImage(
             cv.LINE_AA
         );
     }
-    cv.imshow(textImage_canvasId, textImage);
+    cv.imshow(textImage_canvas_id, textImage);
     textImage.delete();
 
     function newRectangleData(x, y, width, height) {
