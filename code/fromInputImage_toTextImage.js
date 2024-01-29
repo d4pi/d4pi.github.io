@@ -41,7 +41,7 @@ function _fromInputImage_toTextImage(
     const d4pi_boundingRectangleCandidate_color = new cv.Scalar(0, 160, 0);
     _itemImageData[itemImage_data_id] = {
         candidates: [],
-        winner: newRectangleData(0, 0, 0, 0)
+        bestCandidate: newRectangleData(0, 0, 0, 0)
     };
     const inputImage_ItemImageDetection_report = cv.Mat.zeros(inputImage.rows, inputImage.cols, cv.CV_8UC3);
     inputImage.delete();
@@ -84,9 +84,9 @@ function _fromInputImage_toTextImage(
                         || candidate.height !== _newRectangleData.height
                     )) {
                         itemImage_data.candidates.push(_newRectangleData);
-                        const winner = itemImage_data.winner;
-                        if (winner.width * winner.height < _newRectangleData.width * _newRectangleData.height) {
-                            itemImage_data.winner = _newRectangleData;
+                        const bestCandidate = itemImage_data.bestCandidate;
+                        if (bestCandidate.width * bestCandidate.height < _newRectangleData.width * _newRectangleData.height) {
+                            itemImage_data.bestCandidate = _newRectangleData;
                         }
                     }
                 }
@@ -115,14 +115,14 @@ function _fromInputImage_toTextImage(
         const d4pi_boundingRectangle_color = new cv.Scalar(0, 192, 0);
         cv.rectangle(
             inputImage_ItemImageDetection_report,
-            new cv.Point(itemImage_data.winner.x, itemImage_data.winner.y),
-            new cv.Point(itemImage_data.winner.x + itemImage_data.winner.width, itemImage_data.winner.y + itemImage_data.winner.height),
+            new cv.Point(itemImage_data.bestCandidate.x, itemImage_data.bestCandidate.y),
+            new cv.Point(itemImage_data.bestCandidate.x + itemImage_data.bestCandidate.width, itemImage_data.bestCandidate.y + itemImage_data.bestCandidate.height),
             d4pi_boundingRectangle_color,
             3,
             cv.LINE_AA
         );
         const inputImage = cv.imread(inputImage_image);
-        itemImage = inputImage.roi(itemImage_data.winner);
+        itemImage = inputImage.roi(itemImage_data.bestCandidate);
         inputImage.delete();
     }
     cv.imshow(inputImage_afterItemImageDetection_canvas_id, inputImage_ItemImageDetection_report);
@@ -162,11 +162,12 @@ function _fromInputImage_toTextImage(
 
     function newRectangleData(x, y, width, height) {
         return {
+            height: height,
+            width: width,
             x: x,
             y: y,
-            width: width,
-            height: height,
-            id: `Rectangle (x: ${x}) (y: ${y}) (width: ${width}) (height: ${height})`
+
+            get key() { return `Rectangle (height: ${this.height}) (width: ${this.width}) (x: ${this.x}) (y: ${this.y})`; },
         };
     }
 }
